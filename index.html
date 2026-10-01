@@ -1188,50 +1188,38 @@ const groups = {
 
     1: {
         name: "第1群",
-        description:
-            "魚、肉、卵、豆、豆製品など",
-        nutrient:
-            "主にたんぱく質"
+        description: "魚、肉、卵、豆、豆製品など",
+        nutrient: "主にたんぱく質"
     },
 
     2: {
         name: "第2群",
-        description:
-            "牛乳・乳製品、小魚、海藻など",
-        nutrient:
-            "主にカルシウム"
+        description: "牛乳・乳製品、小魚、海藻など",
+        nutrient: "主にカルシウム"
     },
 
     3: {
         name: "第3群",
-        description:
-            "緑黄色野菜など",
-        nutrient:
-            "主にカロテン・ビタミン"
+        description: "緑黄色野菜など",
+        nutrient: "主にカロテン・ビタミン"
     },
 
     4: {
         name: "第4群",
-        description:
-            "その他の野菜、果物など",
-        nutrient:
-            "主にビタミン・ミネラル"
+        description: "その他の野菜、果物など",
+        nutrient: "主にビタミン・ミネラル"
     },
 
     5: {
         name: "第5群",
-        description:
-            "穀類、いも類、砂糖など",
-        nutrient:
-            "主に炭水化物"
+        description: "穀類、いも類、砂糖など",
+        nutrient: "主に炭水化物"
     },
 
     6: {
         name: "第6群",
-        description:
-            "油脂類、脂肪の多い食品など",
-        nutrient:
-            "主に脂質"
+        description: "油脂類、脂肪の多い食品など",
+        nutrient: "主に脂質"
     }
 
 };
@@ -1270,21 +1258,21 @@ async function loadFoods() {
 
     try {
 
-        const response =
-            await fetch("foods.json");
+        const response = await fetch("./foods.json");
 
         if (!response.ok) {
-            throw new Error();
+            throw new Error("foods.jsonの読み込みに失敗しました");
         }
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         foods = data.foods;
 
         createStudyMode();
 
     } catch (error) {
+
+        console.error(error);
 
         document
             .getElementById("group-container")
@@ -1297,6 +1285,7 @@ async function loadFoods() {
                     <strong>
                         foods.jsonを読み込めませんでした。
                     </strong>
+
                     <p>
                         index.htmlとfoods.jsonが
                         同じ場所にあるか確認してください。
@@ -1318,9 +1307,7 @@ function showScreen(id) {
     document
         .querySelectorAll(".screen")
         .forEach(screen => {
-
             screen.classList.remove("active");
-
         });
 
     document
@@ -1346,25 +1333,16 @@ function showStudyMode() {
 function createStudyMode() {
 
     const container =
-        document.getElementById(
-            "group-container"
-        );
+        document.getElementById("group-container");
 
     container.innerHTML = "";
 
-
-    for (
-        let group = 1;
-        group <= 6;
-        group++
-    ) {
+    for (let group = 1; group <= 6; group++) {
 
         const card =
             document.createElement("div");
 
-        card.className =
-            "group-card";
-
+        card.className = "group-card";
 
         const groupFoods =
             foods
@@ -1373,9 +1351,9 @@ function createStudyMode() {
                         Number(food.group) === group
                 )
                 .map(
-                    food => food.name
+                    food =>
+                        food.name
                 );
-
 
         card.innerHTML = `
 
@@ -1401,9 +1379,9 @@ function createStudyMode() {
                     ? groupFoods
                         .map(
                             name =>
-                            `<span>
-                                ${escapeHtml(name)}
-                             </span>`
+                                `<span>
+                                    ${escapeHtml(name)}
+                                </span>`
                         )
                         .join("")
 
@@ -1413,7 +1391,6 @@ function createStudyMode() {
             </div>
 
         `;
-
 
         card.addEventListener(
             "click",
@@ -1425,7 +1402,6 @@ function createStudyMode() {
 
             }
         );
-
 
         container.appendChild(card);
 
@@ -1440,9 +1416,7 @@ function createStudyMode() {
 
 function showPracticeMode() {
 
-    showScreen(
-        "practice-settings-screen"
-    );
+    showScreen("practice-settings-screen");
 
 }
 
@@ -1456,47 +1430,30 @@ document
             () => {
 
                 document
-                    .querySelectorAll(
-                        ".count-button"
-                    )
+                    .querySelectorAll(".count-button")
                     .forEach(
                         b =>
-                            b.classList.remove(
-                                "selected"
-                            )
+                            b.classList.remove("selected")
                     );
 
-
-                button.classList.add(
-                    "selected"
-                );
-
+                button.classList.add("selected");
 
                 const count =
                     button.dataset.count;
 
-
                 if (count === "custom") {
 
                     document
-                        .getElementById(
-                            "custom-count"
-                        )
-                        .classList.add(
-                            "active"
-                        );
+                        .getElementById("custom-count")
+                        .classList.add("active");
 
                     selectedCount = null;
 
                 } else {
 
                     document
-                        .getElementById(
-                            "custom-count"
-                        )
-                        .classList.remove(
-                            "active"
-                        );
+                        .getElementById("custom-count")
+                        .classList.remove("active");
 
                     selectedCount =
                         Number(count);
@@ -1510,9 +1467,7 @@ document
 
 
 document
-    .querySelector(
-        '[data-count="10"]'
-    )
+    .querySelector('[data-count="10"]')
     .classList.add("selected");
 
 
@@ -1532,8 +1487,7 @@ function shuffle(array) {
 
         const j =
             Math.floor(
-                Math.random() *
-                (i + 1)
+                Math.random() * (i + 1)
             );
 
         [
@@ -1566,18 +1520,14 @@ function startPractice() {
         return;
     }
 
-
     let count;
-
 
     if (selectedCount === null) {
 
         count =
             Number(
                 document
-                    .getElementById(
-                        "custom-count-input"
-                    )
+                    .getElementById("custom-count-input")
                     .value
             );
 
@@ -1586,7 +1536,6 @@ function startPractice() {
         count = selectedCount;
 
     }
-
 
     if (
         !Number.isInteger(count) ||
@@ -1600,7 +1549,6 @@ function startPractice() {
         return;
     }
 
-
     if (count > foods.length) {
 
         alert(
@@ -1610,33 +1558,39 @@ function startPractice() {
         return;
     }
 
+    /* 前回のタイムアタックを完全に停止 */
+    stopTimer();
+
+    if (autoNextTimeout !== null) {
+
+        clearTimeout(autoNextTimeout);
+
+        autoNextTimeout = null;
+
+    }
 
     quizMode = "practice";
 
     quizFoods =
-        shuffle(foods)
-            .slice(0, count);
+        shuffle(foods).slice(0, count);
 
     currentIndex = 0;
 
     score = 0;
 
-    stopTimer();
-
     showScreen("quiz-screen");
 
     document
-        .getElementById(
-            "timer-container"
-        )
+        .getElementById("quiz-screen")
+        .classList.remove("timeattack");
+
+    document
+        .getElementById("timer-container")
         .style.display = "none";
 
     document
-        .getElementById(
-            "mode-label"
-        )
-        .textContent =
-            "練習モード";
+        .getElementById("mode-label")
+        .textContent = "練習モード";
 
     showQuestion();
 
@@ -1658,46 +1612,40 @@ function startTimeAttack() {
         return;
     }
 
+    /* 前回のタイマー・自動遷移を停止 */
+    stopTimer();
+
+    if (autoNextTimeout !== null) {
+
+        clearTimeout(autoNextTimeout);
+
+        autoNextTimeout = null;
+
+    }
 
     quizMode = "timeattack";
 
-    quizFoods =
-        shuffle(foods);
-
+    /* 150問すべて使用 */
+    quizFoods = shuffle(foods);
 
     currentIndex = 0;
 
     score = 0;
 
-
     showScreen("quiz-screen");
 
-
     const quizScreen =
-        document.getElementById(
-            "quiz-screen"
-        );
+        document.getElementById("quiz-screen");
 
-    quizScreen.classList.add(
-        "timeattack"
-    );
-
+    quizScreen.classList.add("timeattack");
 
     document
-        .getElementById(
-            "timer-container"
-        )
-        .style.display =
-            "block";
-
+        .getElementById("timer-container")
+        .style.display = "block";
 
     document
-        .getElementById(
-            "mode-label"
-        )
-        .textContent =
-            "⏱️ タイムアタック";
-
+        .getElementById("mode-label")
+        .textContent = "⏱️ タイムアタック";
 
     startTimer();
 
@@ -1712,77 +1660,51 @@ function startTimeAttack() {
 
 function showQuestion() {
 
-    if (
-        currentIndex >=
-        quizFoods.length
-    ) {
+    /*
+     * すべての問題が終了していたら結果画面へ
+     */
+    if (currentIndex >= quizFoods.length) {
 
         finishQuiz();
 
         return;
     }
 
-
     answered = false;
-
 
     const food =
         quizFoods[currentIndex];
 
-
     document
-        .getElementById(
-            "question-number"
-        )
+        .getElementById("question-number")
         .textContent =
             `問題 ${currentIndex + 1}`;
 
-
     document
-        .getElementById(
-            "progress-label"
-        )
+        .getElementById("progress-label")
         .textContent =
             `${currentIndex + 1} / ${quizFoods.length}`;
 
-
     document
-        .getElementById(
-            "score-label"
-        )
+        .getElementById("score-label")
         .textContent =
             score;
 
-
     document
-        .getElementById(
-            "food-name"
-        )
+        .getElementById("food-name")
         .textContent =
             food.name;
 
+    document
+        .getElementById("feedback")
+        .textContent = "";
 
     document
-        .getElementById(
-            "feedback"
-        )
-        .textContent =
-            "";
-
+        .getElementById("next-button")
+        .classList.remove("show");
 
     document
-        .getElementById(
-            "next-button"
-        )
-        .classList.remove(
-            "show"
-        );
-
-
-    document
-        .querySelectorAll(
-            ".answer-button"
-        )
+        .querySelectorAll(".answer-button")
         .forEach(button => {
 
             button.disabled = false;
@@ -1798,128 +1720,169 @@ function showQuestion() {
 
 
 /* =====================================================
+   次の問題へ進む
+===================================================== */
+
+function goToNextQuestion() {
+
+    /*
+     * 自動遷移タイマーを消す
+     */
+    if (autoNextTimeout !== null) {
+
+        clearTimeout(autoNextTimeout);
+
+        autoNextTimeout = null;
+
+    }
+
+    currentIndex++;
+
+    showQuestion();
+
+}
+
+
+/* =====================================================
    回答
 ===================================================== */
 
 function answer(group) {
 
-    if (answered) return;
+    /*
+     * すでに回答済みなら何もしない
+     */
+    if (answered) {
+        return;
+    }
 
+    /*
+     * クイズ中でなければ何もしない
+     */
+    if (
+        !document
+            .getElementById("quiz-screen")
+            .classList.contains("active")
+    ) {
+        return;
+    }
 
     answered = true;
 
-
     const food =
         quizFoods[currentIndex];
-
 
     const correctGroup =
         Number(food.group);
 
 
+    /*
+     * すべてのボタンを無効化
+     */
     document
-        .querySelectorAll(
-            ".answer-button"
-        )
+        .querySelectorAll(".answer-button")
         .forEach(button => {
 
             button.disabled = true;
 
-
             const buttonGroup =
-                Number(
-                    button.dataset.group
-                );
+                Number(button.dataset.group);
 
-
+            /*
+             * 正解ボタンを緑にする
+             */
             if (
-                buttonGroup ===
-                correctGroup
+                buttonGroup === correctGroup
             ) {
 
-                button.classList.add(
-                    "correct"
-                );
+                button.classList.add("correct");
 
             }
 
         });
 
 
+    /*
+     * 正解・不正解
+     */
     if (
-        group ===
-        correctGroup
+        group === correctGroup
     ) {
 
         score++;
 
-
         document
-            .getElementById(
-                "feedback"
-            )
+            .getElementById("feedback")
             .textContent =
                 "⭕ 正解！";
 
     } else {
 
         document
-            .getElementById(
-                "feedback"
-            )
+            .getElementById("feedback")
             .textContent =
                 `❌ 不正解　→ ${groups[correctGroup].name}`;
-
 
         document
             .querySelector(
                 `[data-group="${group}"]`
             )
-            .classList.add(
-                "wrong"
-            );
+            .classList.add("wrong");
 
     }
 
 
+    /*
+     * スコア更新
+     */
     document
-        .getElementById(
-            "score-label"
-        )
+        .getElementById("score-label")
         .textContent =
             score;
 
 
-    /* =============================================
-       タイムアタックだけ自動で次へ
-    ============================================= */
+    /* =================================================
+       タイムアタック
+       ↓
+       回答から1秒後に自動で次の問題
+    ================================================= */
 
-    if (
-        quizMode ===
-        "timeattack"
-    ) {
+    if (quizMode === "timeattack") {
 
+        /*
+         * 念のため既存のタイマーを消す
+         */
+        if (autoNextTimeout !== null) {
+
+            clearTimeout(autoNextTimeout);
+
+        }
+
+        /*
+         * ここが自動遷移本体
+         */
         autoNextTimeout =
             setTimeout(
                 () => {
 
-                    currentIndex++;
-
-                    showQuestion();
+                    goToNextQuestion();
 
                 },
                 1000
             );
 
-    } else {
+    }
+
+
+    /* =================================================
+       練習モード
+    ================================================= */
+
+    else {
 
         document
-            .getElementById(
-                "next-button"
-            )
-            .classList.add(
-                "show"
-            );
+            .getElementById("next-button")
+            .classList.add("show");
 
     }
 
@@ -1927,13 +1890,11 @@ function answer(group) {
 
 
 /* =====================================================
-   画面ボタン
+   回答ボタン
 ===================================================== */
 
 document
-    .querySelectorAll(
-        ".answer-button"
-    )
+    .querySelectorAll(".answer-button")
     .forEach(button => {
 
         button.addEventListener(
@@ -1961,19 +1922,14 @@ document.addEventListener(
     event => {
 
         if (
-            event.target.tagName ===
-            "INPUT" ||
-            event.target.tagName ===
-            "TEXTAREA"
+            event.target.tagName === "INPUT" ||
+            event.target.tagName === "TEXTAREA"
         ) {
             return;
         }
 
-
         if (
-            /^[1-6]$/.test(
-                event.key
-            )
+            /^[1-6]$/.test(event.key)
         ) {
 
             answer(
@@ -1987,20 +1943,23 @@ document.addEventListener(
 
 
 /* =====================================================
-   練習モードの次へ
+   練習モード「次の問題」
 ===================================================== */
 
 document
-    .getElementById(
-        "next-button"
-    )
+    .getElementById("next-button")
     .addEventListener(
         "click",
         () => {
 
-            currentIndex++;
+            /*
+             * 練習モードでは手動で次へ
+             */
+            if (quizMode === "practice") {
 
-            showQuestion();
+                goToNextQuestion();
+
+            }
 
         }
     );
@@ -2012,8 +1971,14 @@ document
 
 function startTimer() {
 
+    stopTimer();
+
     timerStart =
         performance.now();
+
+    document
+        .getElementById("timer")
+        .textContent = "0.0";
 
 
     timerInterval =
@@ -2027,11 +1992,8 @@ function startTimer() {
                         timerStart
                     ) / 1000;
 
-
                 document
-                    .getElementById(
-                        "timer"
-                    )
+                    .getElementById("timer")
                     .textContent =
                         elapsed.toFixed(1);
 
@@ -2082,38 +2044,27 @@ function finishQuiz() {
 
 
     document
-        .getElementById(
-            "quiz-screen"
-        )
-        .classList.remove(
-            "timeattack"
-        );
+        .getElementById("quiz-screen")
+        .classList.remove("timeattack");
 
 
-    showScreen(
-        "result-screen"
-    );
+    showScreen("result-screen");
 
 
     document
-        .getElementById(
-            "result-score"
-        )
+        .getElementById("result-score")
         .textContent =
             score;
 
 
     document
-        .getElementById(
-            "result-total"
-        )
+        .getElementById("result-total")
         .textContent =
             quizFoods.length;
 
 
     if (
-        quizMode ===
-        "timeattack"
+        quizMode === "timeattack"
     ) {
 
         const elapsed =
@@ -2123,38 +2074,26 @@ function finishQuiz() {
                 timerStart
             ) / 1000;
 
-
         document
-            .getElementById(
-                "result-title"
-            )
+            .getElementById("result-title")
             .textContent =
                 "⏱️ タイムアタック結果";
 
-
         document
-            .getElementById(
-                "result-time"
-            )
+            .getElementById("result-time")
             .textContent =
                 `タイム：${elapsed.toFixed(1)}秒`;
 
     } else {
 
         document
-            .getElementById(
-                "result-title"
-            )
+            .getElementById("result-title")
             .textContent =
                 "✏️ 練習結果";
 
-
         document
-            .getElementById(
-                "result-time"
-            )
-            .textContent =
-                "";
+            .getElementById("result-time")
+            .textContent = "";
 
     }
 
@@ -2168,9 +2107,7 @@ function finishQuiz() {
 function escapeHtml(text) {
 
     const div =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     div.textContent = text;
 
