@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6つの基礎食品群クイズ</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            "Noto Sans JP",
+            sans-serif;
+        background: #f4f6f8;
+        color: #222;
+    }
+
+    header {
+        background: #ffffff;
+        border-bottom: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        color: #666;
+    }
+
+    main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 24px 16px 50px;
+    }
+
+    .screen {
+        display: none;
+    }
+
+    .screen.active {
+        display: block;
+    }
+
+    .menu {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 25px;
+    }
+
+    button {
+        font: inherit;
+        cursor: pointer;
+        border: none;
+    }
+
+    .mode-button {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 16px;
+        padding: 28px 15px;
+        transition: 0.15s;
+    }
+
+    .mode-button:hover {
+        transform: translateY(-2px);
+        border-color: #888;
+    }
+
+    .mode-button h2 {
+        margin: 0 0 8px;
+        font-size: 22px;
+    }
+
+    .mode-button p {
+        margin: 0;
+        color: #666;
+    }
+
+    .back-button {
+        background: #555;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin-bottom: 20px;
+    }
+
+    .group-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .group-card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        border-left: 7px solid #888;
+        cursor: pointer;
+    }
+
+    .group-card h2 {
+        margin: 0 0 8px;
+    }
+
+    .group-card p {
+        margin: 5px 0;
+        color: #555;
+    }
+
+    .food-list {
+        display: none;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+    }
+
+    .food-list.open {
+        display: block;
+    }
+
+    .food-list span {
+        display: inline-block;
+        background: #f0f2f4;
+        border-radius: 20px;
+        padding: 6px 11px;
+        margin: 3px;
+        font-size: 14px;
+    }
+
+    .practice-settings {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .count-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 15px 0;
+    }
+
+    .count-button {
+        padding: 10px 17px;
+        background: #eee;
+        border-radius: 8px;
+    }
+
+    .count-button.selected {
+        background: #333;
+        color: white;
+    }
+
+    .custom-count {
+        display: none;
+        margin-top: 12px;
+    }
+
+    .custom-count.active {
+        display: block;
+    }
+
+    .custom-count input {
+        width: 150px;
+        padding: 10px;
+        font-size: 18px;
+        border: 1px solid #bbb;
+        border-radius: 8px;
+    }
+
+    .start-button {
+        width: 100%;
+        padding: 15px;
+        background: #222;
+        color: white;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .status {
+        background: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+    }
+
+    .question-card {
+        background: white;
+        border-radius: 18px;
+        padding: 35px 20px;
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .question-number {
+        color: #666;
+        font-size: 15px;
+    }
+
+    .food-name {
+        font-size: clamp(36px, 8vw, 64px);
+        font-weight: bold;
+        margin: 25px 0;
+    }
+
+    .answer-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .answer-button {
+        min-height: 75px;
+        border-radius: 12px;
+        background: white;
+        border: 2px solid #ccc;
+        font-size: 19px;
+        transition: 0.1s;
+    }
+
+    .answer-button:hover {
+        background: #f0f0f0;
+    }
+
+    .answer-button:disabled {
+        cursor: default;
+    }
+
+    .answer-button.correct {
+        background: #d9f5df;
+        border-color: #35a853;
+    }
+
+    .answer-button.wrong {
+        background: #ffdede;
+        border-color: #d93025;
+    }
+
+    .key {
+        display: inline-block;
+        background: #eee;
+        border-radius: 5px;
+        padding: 2px 7px;
+        margin-right: 6px;
+        font-weight: bold;
+    }
+
+    .feedback {
+        min-height: 35px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        margin: 12px;
+    }
+
+    .next-button {
+        display: none;
+        margin: 15px auto;
+        padding: 12px 30px;
+        background: #333;
+        color: white;
+        border-radius: 9px;
+    }
+
+    .next-button.show {
+        display: block;
+    }
+
+    .timer {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .result {
+        background: white;
+        border-radius: 18px;
+        padding: 35px;
+        text-align: center;
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .result-score {
+        font-size: 60px;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .result-time {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    @media (max-width: 700px) {
+        .menu {
+            grid-template-columns: 1fr;
+        }
+
+        .group-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .answer-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .question-card {
+            padding: 25px 12px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>6つの基礎食品群クイズ</h1>
+    <p>食品を見て、どの群に入るか答えよう！</p>
+</header>
+
+<main>
+
+    <!-- =========================
+         メニュー
+    ========================== -->
+    <section id="menu-screen" class="screen active">
+
+        <div class="menu">
+
+            <button class="mode-button" onclick="showStudyMode()">
+                <h2>📖 勉強モード</h2>
+                <p>6つの食品群を確認する</p>
+            </button>
+
+            <button class="mode-button" onclick="showPracticeMode()">
+                <h2>✏️ 練習モード</h2>
+                <p>好きな問題数で練習する</p>
+            </button>
+
+            <button class="mode-button" onclick="startTimeAttack()">
+                <h2>⏱️ タイムアタック</h2>
+                <p>150問をどれだけ速く答えられる？</p>
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         勉強モード
+    ========================== -->
+    <section id="study-screen" class="screen">
+
+        <button class="back-button" onclick="showScreen('menu-screen')">
+            ← メニューへ
+        </button>
+
+        <h2>📖 勉強モード</h2>
+        <p>群をタップすると食品一覧が表示されます。</p>
+
+        <div id="group-container" class="group-grid"></div>
+
+    </section>
+
+
+    <!-- =========================
+         練習モード設定
+    ========================== -->
+    <section id="practice-settings-screen" class="screen">
+
+        <button class="back-button" onclick="showScreen('menu-screen')">
+            ← メニューへ
+        </button>
+
+        <div class="practice-settings">
+
+            <h2>✏️ 練習モード</h2>
+
+            <p>問題数を選択してください。</p>
+
+            <div class="count-buttons">
+
+                <button class="count-button" data-count="5">5問</button>
+                <button class="count-button" data-count="10">10問</button>
+                <button class="count-button" data-count="20">20問</button>
+                <button class="count-button" data-count="30">30問</button>
+                <button class="count-button" data-count="50">50問</button>
+                <button class="count-button" data-count="100">100問</button>
+                <button class="count-button" data-count="150">150問</button>
+                <button class="count-button" data-count="custom">カスタム</button>
+
+            </div>
+
+            <div id="custom-count" class="custom-count">
+                <label>
+                    問題数：
+                    <input
+                        id="custom-count-input"
+                        type="number"
+                        min="1"
+                        max="150"
+                        value="15"
+                    >
+                    問
+                </label>
+            </div>
+
+            <button class="start-button" onclick="startPractice()">
+                練習開始
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         クイズ
+    ========================== -->
+    <section id="quiz-screen" class="screen">
+
+        <div class="quiz-header">
+
+            <div class="status">
+                <span id="mode-label"></span>
+            </div>
+
+            <div class="status">
+                <span id="progress-label"></span>
+            </div>
+
+            <div class="status">
+                正解：<span id="score-label">0</span>
+            </div>
+
+            <div id="timer-container" class="status timer" style="display:none;">
+                ⏱️ <span id="timer">0.0</span>秒
+            </div>
+
+        </div>
+
+        <div class="question-card">
+
+            <div class="question-number" id="question-number"></div>
+
+            <div class="food-name" id="food-name">
+                食品名
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+
+        </div>
+
+        <div class="answer-grid">
+
+            <button class="answer-button" data-group="1">
+                <span class="key">1</span>第1群
+            </button>
+
+            <button class="answer-button" data-group="2">
+                <span class="key">2</span>第2群
+            </button>
+
+            <button class="answer-button" data-group="3">
+                <span class="key">3</span>第3群
+            </button>
+
+            <button class="answer-button" data-group="4">
+                <span class="key">4</span>第4群
+            </button>
+
+            <button class="answer-button" data-group="5">
+                <span class="key">5</span>第5群
+            </button>
+
+            <button class="answer-button" data-group="6">
+                <span class="key">6</span>第6群
+            </button>
+
+        </div>
+
+        <button id="next-button" class="next-button">
+            次の問題 →
+        </button>
+
+    </section>
+
+
+    <!-- =========================
+         結果
+    ========================== -->
+    <section id="result-screen" class="screen">
+
+        <div class="result">
+
+            <h2 id="result-title">結果</h2>
+
+            <div class="result-score">
+                <span id="result-score">0</span>
+                /
+                <span id="result-total">0</span>
+            </div>
+
+            <div id="result-time" class="result-time"></div>
+
+            <button class="start-button" onclick="showScreen('menu-screen')">
+                メニューへ戻る
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   第1〜6群の説明
+   ※食品データそのものは foods.json に入れない
+===================================================== */
+
+const groups = {
+
+    1: {
+        name: "第1群",
+        description: "魚、肉、卵、豆、豆製品など",
+        nutrient: "主にたんぱく質"
+    },
+
+    2: {
+        name: "第2群",
+        description: "牛乳・乳製品、小魚、海藻など",
+        nutrient: "主にカルシウム"
+    },
+
+    3: {
+        name: "第3群",
+        description: "緑黄色野菜など",
+        nutrient: "主にカロテン・ビタミン"
+    },
+
+    4: {
+        name: "第4群",
+        description: "その他の野菜、果物など",
+        nutrient: "主にビタミン・ミネラル"
+    },
+
+    5: {
+        name: "第5群",
+        description: "穀類、いも類、砂糖など",
+        nutrient: "主に炭水化物"
+    },
+
+    6: {
+        name: "第6群",
+        description: "油脂類、脂肪の多い食品など",
+        nutrient: "主に脂質"
+    }
+
+};
+
+
+/* =====================================================
+   データ
+===================================================== */
+
+let foods = [];
+
+let quizFoods = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+
+let quizMode = "";
+let selectedCount = 10;
+
+let timerStart = 0;
+let timerInterval = null;
+
+
+/* =====================================================
+   foods.json 読み込み
+===================================================== */
+
+async function loadFoods() {
+
+    try {
+
+        const response = await fetch("foods.json");
+
+        if (!response.ok) {
+            throw new Error("foods.jsonを読み込めませんでした。");
+        }
+
+        const data = await response.json();
+
+        foods = data.foods;
+
+        createStudyMode();
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("group-container").innerHTML = `
+            <div style="
+                background:white;
+                padding:20px;
+                border-radius:12px;
+            ">
+                <strong>食品データを読み込めませんでした。</strong>
+                <p>
+                    index.html と foods.json が同じフォルダにあるか確認してください。
+                </p>
+                <p>
+                    また、HTMLを直接開くのではなく、
+                    ローカルサーバーなどから実行してください。
+                </p>
+            </div>
+        `;
+    }
+}
+
+
+/* =====================================================
+   画面切り替え
+===================================================== */
+
+function showScreen(id) {
+
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+}
+
+
+/* =====================================================
+   勉強モード
+===================================================== */
+
+function showStudyMode() {
+
+    createStudyMode();
+
+    showScreen("study-screen");
+
+}
+
+
+function createStudyMode() {
+
+    const container = document.getElementById("group-container");
+
+    container.innerHTML = "";
+
+    for (let group = 1; group <= 6; group++) {
+
+        const card = document.createElement("div");
+
+        card.className = "group-card";
+
+        const groupFoods = foods
+            .filter(food => Number(food.group) === group)
+            .map(food => food.name);
+
+        card.innerHTML = `
+            <h2>${groups[group].name}</h2>
+
+            <p>
+                <strong>${groups[group].description}</strong>
+            </p>
+
+            <p>
+                ${groups[group].nutrient}
+            </p>
+
+            <div class="food-list">
+
+                ${
+                    groupFoods.length
+                    ? groupFoods.map(name =>
+                        `<span>${escapeHtml(name)}</span>`
+                      ).join("")
+                    : "<p>食品データがありません。</p>"
+                }
+
+            </div>
+        `;
+
+        card.addEventListener("click", () => {
+
+            const list = card.querySelector(".food-list");
+
+            list.classList.toggle("open");
+
+        });
+
+        container.appendChild(card);
+    }
+}
+
+
+/* =====================================================
+   練習モード設定
+===================================================== */
+
+function showPracticeMode() {
+
+    showScreen("practice-settings-screen");
+
+}
+
+
+document.querySelectorAll(".count-button").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document.querySelectorAll(".count-button")
+            .forEach(b => b.classList.remove("selected"));
+
+        button.classList.add("selected");
+
+        const count = button.dataset.count;
+
+        if (count === "custom") {
+
+            document
+                .getElementById("custom-count")
+                .classList.add("active");
+
+            selectedCount = null;
+
+        } else {
+
+            document
+                .getElementById("custom-count")
+                .classList.remove("active");
+
+            selectedCount = Number(count);
+
+        }
+
+    });
+
+});
+
+
+/* 最初は10問を選択 */
+
+document
+    .querySelector('[data-count="10"]')
+    .classList.add("selected");
+
+
+/* =====================================================
+   シャッフル
+===================================================== */
+
+function shuffle(array) {
+
+    const result = [...array];
+
+    for (let i = result.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [result[i], result[j]] = [result[j], result[i]];
+
+    }
+
+    return result;
+}
+
+
+/* =====================================================
+   練習開始
+===================================================== */
+
+function startPractice() {
+
+    if (foods.length === 0) {
+        alert("食品データが読み込まれていません。");
+        return;
+    }
+
+    let count;
+
+    if (selectedCount === null) {
+
+        count = Number(
+            document.getElementById("custom-count-input").value
+        );
+
+    } else {
+
+        count = selectedCount;
+
+    }
+
+    if (!Number.isInteger(count) || count < 1) {
+
+        alert("1問以上を指定してください。");
+        return;
+
+    }
+
+    if (count > foods.length) {
+
+        alert(`最大${foods.length}問までです。`);
+        return;
+
+    }
+
+    quizMode = "practice";
+
+    quizFoods = shuffle(foods).slice(0, count);
+
+    currentIndex = 0;
+    score = 0;
+
+    stopTimer();
+
+    document.getElementById("timer-container").style.display = "none";
+
+    document.getElementById("mode-label").textContent =
+        "練習モード";
+
+    showScreen("quiz-screen");
+
+    showQuestion();
+
+}
+
+
+/* =====================================================
+   タイムアタック
+===================================================== */
+
+function startTimeAttack() {
+
+    if (foods.length === 0) {
+        alert("食品データが読み込まれていません。");
+        return;
+    }
+
+    quizMode = "timeattack";
+
+    quizFoods = shuffle(foods);
+
+    currentIndex = 0;
+    score = 0;
+
+    document.getElementById("mode-label").textContent =
+        "タイムアタック";
+
+    document.getElementById("timer-container").style.display =
+        "block";
+
+    showScreen("quiz-screen");
+
+    startTimer();
+
+    showQuestion();
+
+}
+
+
+/* =====================================================
+   問題表示
+===================================================== */
+
+function showQuestion() {
+
+    if (currentIndex >= quizFoods.length) {
+
+        finishQuiz();
+
+        return;
+    }
+
+    answered = false;
+
+    const food = quizFoods[currentIndex];
+
+    document.getElementById("question-number").textContent =
+        `問題 ${currentIndex + 1}`;
+
+    document.getElementById("progress-label").textContent =
+        `${currentIndex + 1} / ${quizFoods.length}`;
+
+    document.getElementById("score-label").textContent =
+        score;
+
+    document.getElementById("food-name").textContent =
+        food.name;
+
+    document.getElementById("feedback").textContent =
+        "";
+
+    document.getElementById("next-button")
+        .classList.remove("show");
+
+    document.querySelectorAll(".answer-button").forEach(button => {
+
+        button.disabled = false;
+
+        button.classList.remove("correct", "wrong");
+
+    });
+
+}
+
+
+/* =====================================================
+   回答処理
+===================================================== */
+
+function answer(group) {
+
+    if (answered) return;
+
+    answered = true;
+
+    const food = quizFoods[currentIndex];
+
+    const correctGroup = Number(food.group);
+
+    const buttons =
+        document.querySelectorAll(".answer-button");
+
+    buttons.forEach(button => {
+
+        button.disabled = true;
+
+        const buttonGroup =
+            Number(button.dataset.group);
+
+        if (buttonGroup === correctGroup) {
+
+            button.classList.add("correct");
+
+        }
+
+    });
+
+
+    if (group === correctGroup) {
+
+        score++;
+
+        document.getElementById("feedback").textContent =
+            "⭕ 正解！";
+
+    } else {
+
+        const correctName =
+            groups[correctGroup].name;
+
+        document.getElementById("feedback").textContent =
+            `❌ 不正解　→ ${correctName}`;
+
+        document
+            .querySelector(`[data-group="${group}"]`)
+            .classList.add("wrong");
+
+    }
+
+    document.getElementById("score-label").textContent =
+        score;
+
+    document.getElementById("next-button")
+        .classList.add("show");
+
+}
+
+
+/* =====================================================
+   ボタンクリック
+===================================================== */
+
+document.querySelectorAll(".answer-button").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        answer(Number(button.dataset.group));
+
+    });
+
+});
+
+
+/* =====================================================
+   キーボード 1〜6
+===================================================== */
+
+document.addEventListener("keydown", event => {
+
+    // 入力欄に入力中なら無視
+    if (
+        event.target.tagName === "INPUT" ||
+        event.target.tagName === "TEXTAREA"
+    ) {
+        return;
+    }
+
+    const key = event.key;
+
+    if (/^[1-6]$/.test(key)) {
+
+        answer(Number(key));
+
+    }
+
+});
+
+
+/* =====================================================
+   次の問題
+===================================================== */
+
+document
+    .getElementById("next-button")
+    .addEventListener("click", () => {
+
+        currentIndex++;
+
+        showQuestion();
+
+    });
+
+
+/* =====================================================
+   タイマー
+===================================================== */
+
+function startTimer() {
+
+    timerStart = performance.now();
+
+    timerInterval = setInterval(() => {
+
+        const elapsed =
+            (performance.now() - timerStart) / 1000;
+
+        document.getElementById("timer").textContent =
+            elapsed.toFixed(1);
+
+    }, 100);
+
+}
+
+
+function stopTimer() {
+
+    if (timerInterval !== null) {
+
+        clearInterval(timerInterval);
+
+        timerInterval = null;
+
+    }
+
+}
+
+
+/* =====================================================
+   結果
+===================================================== */
+
+function finishQuiz() {
+
+    stopTimer();
+
+    showScreen("result-screen");
+
+    document.getElementById("result-score").textContent =
+        score;
+
+    document.getElementById("result-total").textContent =
+        quizFoods.length;
+
+    if (quizMode === "timeattack") {
+
+        const elapsed =
+            (performance.now() - timerStart) / 1000;
+
+        document.getElementById("result-title").textContent =
+            "⏱️ タイムアタック結果";
+
+        document.getElementById("result-time").textContent =
+            `タイム：${elapsed.toFixed(1)}秒`;
+
+    } else {
+
+        document.getElementById("result-title").textContent =
+            "✏️ 練習結果";
+
+        document.getElementById("result-time").textContent =
+            "";
+
+    }
+
+}
+
+
+/* =====================================================
+   HTMLエスケープ
+===================================================== */
+
+function escapeHtml(text) {
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   起動
+===================================================== */
+
+loadFoods();
+
+</script>
+
+</body>
+</html>
